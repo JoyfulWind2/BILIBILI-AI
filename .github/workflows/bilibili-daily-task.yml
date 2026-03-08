@@ -63,17 +63,11 @@ jobs:
         cd ./src/Ray.BiliBiliTool.Console
         dotnet publish --configuration Release --self-contained true --runtime linux-x64 --output ./bin/Publish/net5-dependent
        
-    # 运行（保留所有原有环境变量）
+    # 运行（仅保留核心配置，删除所有过时字段）
     - name: Run APP
       env:
         ASPNETCORE_ENVIRONMENT: ${{secrets.ENV}} # 运行环境
-        Ray_BiliBiliCookie__CookieStr: ${{secrets.COOKIESTR}}
-        Ray_BiliBiliCookie__UserId: ${{secrets.USERID}} # 已过时
-        Ray_BiliBiliCookie__DedeUserID: ${{secrets.DEDEUSERID}} # 已过时
-        Ray_BiliBiliCookie__SessData: ${{secrets.SESSDATA}} # 已过时
-        Ray_BiliBiliCookie__BiliJct: ${{secrets.BILIJCT}} # 已过时
-        Ray_BiliBiliCookie__Bili_jct: ${{secrets.BILI_JCT}} # 已过时
-        Ray_BiliBiliCookie__OtherCookies: ${{secrets.OTHERCOOKIES}} # 已过时
+        Ray_BiliBiliCookie__CookieStr: ${{secrets.COOKIESTR}} # 仅保留这个核心Cookie字段
         Ray_Serilog__WriteTo__3__Args__botToken: ${{secrets.PUSHTGTOKEN}} # Telegram
         Ray_Serilog__WriteTo__3__Args__chatId: ${{secrets.PUSHTGCHATID}}
         Ray_Serilog__WriteTo__3__Args__containsTrigger: ${{secrets.PUSHTGTRIGGER}}
@@ -99,7 +93,7 @@ jobs:
         Ray_Security__IntervalSecondsBetweenRequestApi: ${{secrets.INTERVALSECONDSBETWEENREQUESTAPI}}
         Ray_Security__IntervalMethodTypes: ${{secrets.INTERVALMETHODTYPES}}
         Ray_Security__UserAgent: ${{secrets.USERAGENT}}
-        Ray_Security__WebProxy: ${{secrets.WEBPROXY}}
+        Ray_Security__WebProxy: ${{secrets.WEBPROXY}} # 代理（可选）
         Ray_Security__RandomSleepMaxMin: ${{secrets.RANDOMSLEEPMAXMIN}}
         Ray_DailyTaskConfig__NumberOfCoins: ${{secrets.NUMBEROFCOINS}}
         Ray_DailyTaskConfig__SelectLike: ${{secrets.SELECTLIKE}}
