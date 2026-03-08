@@ -63,11 +63,14 @@ jobs:
         cd ./src/Ray.BiliBiliTool.Console
         dotnet publish --configuration Release --self-contained true --runtime linux-x64 --output ./bin/Publish/net5-dependent
        
-    # 运行（仅保留核心配置，删除所有过时字段）
+    # 运行（仅保留核心配置，补充必填的登录字段）
     - name: Run APP
       env:
         ASPNETCORE_ENVIRONMENT: ${{secrets.ENV}} # 运行环境
-        Ray_BiliBiliCookie__CookieStr: ${{secrets.COOKIESTR}} # 仅保留这个核心Cookie字段
+        Ray_BiliBiliCookie__CookieStr: ${{secrets.COOKIESTR}} # 核心Cookie字段
+        Ray_BiliBiliCookie__UserId: ${{secrets.USERID}} # 补充必填：用户ID
+        Ray_BiliBiliCookie__SessData: ${{secrets.SESSDATA}} # 补充必填：会话凭证
+        Ray_BiliBiliCookie__BiliJct: ${{secrets.BILIJCT}} # 补充必填：CSRF校验
         Ray_Serilog__WriteTo__3__Args__botToken: ${{secrets.PUSHTGTOKEN}} # Telegram
         Ray_Serilog__WriteTo__3__Args__chatId: ${{secrets.PUSHTGCHATID}}
         Ray_Serilog__WriteTo__3__Args__containsTrigger: ${{secrets.PUSHTGTRIGGER}}
