@@ -16,7 +16,7 @@ jobs:
       max-parallel: 1
       fail-fast: false
       matrix:
-        attempt: [1, 2, 3] # 最多重试3次
+        attempt: [1, 2] # 最多重试2次
     steps:
     # 输出IP
     - name: IP
@@ -37,11 +37,14 @@ jobs:
         dotnet-version: 5.0.x
         include-prerelease: false
 
-    # 优化：适配ubuntu-latest（22.04）的依赖安装
+    # 修复：适配ubuntu-latest（22.04）+ .NET 5 兼容的依赖安装
     - name: Install required libraries
       run: |
         sudo apt-get update -y
-        sudo apt-get install -y libssl3 libicu70 # 替换旧版本依赖
+        # 安装新版依赖 + 手动安装.NET 5需要的旧版libssl1.1
+        sudo apt-get install -y libssl3 libicu70
+        wget http://security.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.23_amd64.deb
+        sudo dpkg -i libssl1.1_1.1.1f-1ubuntu2.23_amd64.deb
 
     # 新增：还原NuGet包（确保依赖完整）
     - name: Restore dependencies
