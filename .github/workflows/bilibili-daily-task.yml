@@ -9,14 +9,14 @@ on:
 
 jobs:
   run-bilibili-tool:
-    runs-on: ubuntu-latest # 改用最新镜像，分配速度提升50%+
+    runs-on: ubuntu-latest # 保留最新镜像
     environment: Production
-    # 新增重试机制，分配失败自动重试
+    # 重试机制：最多重试2次，串行执行
     strategy:
       max-parallel: 1
       fail-fast: false
       matrix:
-        attempt: [1, 2] # 最多重试2次
+        attempt: [1, 2] # 你设置的2次重试
     steps:
     # 输出IP
     - name: IP
@@ -37,14 +37,19 @@ jobs:
         dotnet-version: 5.0.x
         include-prerelease: false
 
-    # 修复：适配ubuntu-latest（22.04）+ .NET 5 兼容的依赖安装
+    # 修复：适配ubuntu-latest（22.04）+ .NET 5 兼容的依赖安装（稳定版）
     - name: Install required libraries
       run: |
         sudo apt-get update -y
-        # 安装新版依赖 + 手动安装.NET 5需要的旧版libssl1.1
+        # 安装新版依赖
         sudo apt-get install -y libssl3 libicu70
-        wget http://security.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2.23_amd64.deb
-        sudo dpkg -i libssl1.1_1.1.1f-1ubuntu2.23_amd64.deb
+        # 临时添加Ubuntu 20.04仓库源（解决libssl1.1下载问题）
+        echo "deb http://archive.ubuntu.com/ubuntu/ focal main restricted universe multiverse" | sudo tee /etc/apt/sources.list.d/focal.list
+        # 仅从临时源更新并安装libssl1.1，避免系统混乱
+        sudo apt-get update -o Dir::Etc::sourcelist="sources.list.d/focal.list" -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0"
+        sudo apt-get install -y libssl1.1
+        # 安装完成后删除临时源
+        sudo rm /etc/apt/sources.list.d/focal.list
 
     # 新增：还原NuGet包（确保依赖完整）
     - name: Restore dependencies
