@@ -68,7 +68,7 @@ jobs:
       env:
         ASPNETCORE_ENVIRONMENT: ${{secrets.ENV}} # 运行环境
         Ray_BiliBiliCookie__CookieStr: ${{secrets.COOKIESTR}} # 核心Cookie字段
-        Ray_BiliBiliCookie__UserId: ${{secrets.USERID}} # 补充必填：用户ID
+        Ray_BiliBiliCookie__UserId: ${{secrets.DEDEUSERID}} # 补充必填：用户ID
         Ray_BiliBiliCookie__SessData: ${{secrets.SESSDATA}} # 补充必填：会话凭证
         Ray_BiliBiliCookie__BiliJct: ${{secrets.BILIJCT}} # 补充必填：CSRF校验
         Ray_Serilog__WriteTo__3__Args__botToken: ${{secrets.PUSHTGTOKEN}} # Telegram
